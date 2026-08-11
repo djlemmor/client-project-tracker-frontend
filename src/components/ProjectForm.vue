@@ -248,7 +248,7 @@ const submitForm = async () => {
 </script>
 
 <template>
-  <div class="form-container">
+  <div class="project-form">
     <!-- Form heading -->
     <h2>
       {{ isEditing ? 'Edit Project' : 'Create Project' }}

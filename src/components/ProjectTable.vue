@@ -283,50 +283,52 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- Search -->
-  <div class="search-container">
-    <label for="search"> Search Projects </label>
+  <div class="table-controls">
+    <!-- Search -->
+    <div class="search-container">
+      <label for="search"> Search Projects </label>
 
-    <input
-      id="search"
-      v-model="searchQuery"
-      type="search"
-      placeholder="Search by client or project..."
-    />
-  </div>
-
-  <!-- Filters -->
-  <div class="filters">
-    <!-- Status filter -->
-    <div>
-      <label for="status-filter"> Status </label>
-
-      <select id="status-filter" v-model="statusFilter">
-        <option value="">All Statuses</option>
-
-        <option value="Planning">Planning</option>
-
-        <option value="In Progress">In Progress</option>
-
-        <option value="On Hold">On Hold</option>
-
-        <option value="Completed">Completed</option>
-      </select>
+      <input
+        id="search"
+        v-model="searchQuery"
+        type="search"
+        placeholder="Search by client or project..."
+      />
     </div>
 
-    <!-- Priority filter -->
-    <div>
-      <label for="priority-filter"> Priority </label>
+    <!-- Filters -->
+    <div class="filters">
+      <!-- Status filter -->
+      <div>
+        <label for="status-filter"> Status </label>
 
-      <select id="priority-filter" v-model="priorityFilter">
-        <option value="">All Priorities</option>
+        <select id="status-filter" v-model="statusFilter">
+          <option value="">All Statuses</option>
 
-        <option value="Low">Low</option>
+          <option value="Planning">Planning</option>
 
-        <option value="Medium">Medium</option>
+          <option value="In Progress">In Progress</option>
 
-        <option value="High">High</option>
-      </select>
+          <option value="On Hold">On Hold</option>
+
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
+
+      <!-- Priority filter -->
+      <div>
+        <label for="priority-filter"> Priority </label>
+
+        <select id="priority-filter" v-model="priorityFilter">
+          <option value="">All Priorities</option>
+
+          <option value="Low">Low</option>
+
+          <option value="Medium">Medium</option>
+
+          <option value="High">High</option>
+        </select>
+      </div>
     </div>
   </div>
 
@@ -379,11 +381,43 @@ onMounted(() => {
           </td>
 
           <td>
-            {{ project.status }}
+            <!--
+        Dynamically choose a CSS class based
+        on the project's status.
+    -->
+            <span
+              class="status-badge"
+              :class="{
+                'status-planning': project.status === 'Planning',
+
+                'status-progress': project.status === 'In Progress',
+
+                'status-hold': project.status === 'On Hold',
+
+                'status-completed': project.status === 'Completed',
+              }"
+            >
+              {{ project.status }}
+            </span>
           </td>
 
           <td>
-            {{ project.priority }}
+            <!--
+        Dynamically style the priority
+        based on its value.
+    -->
+            <span
+              class="priority-badge"
+              :class="{
+                'priority-low': project.priority === 'Low',
+
+                'priority-medium': project.priority === 'Medium',
+
+                'priority-high': project.priority === 'High',
+              }"
+            >
+              {{ project.priority }}
+            </span>
           </td>
 
           <td>
@@ -396,7 +430,7 @@ onMounted(() => {
 
           <td>
             <!-- Edit button -->
-            <button type="button" @click="emit('edit', project)">Edit</button>
+            <button type="button" class="edit-button" @click="emit('edit', project)">Edit</button>
 
             <!-- Delete button -->
             <button
@@ -412,7 +446,13 @@ onMounted(() => {
 
         <!-- Empty state -->
         <tr v-if="filteredProjects.length === 0">
-          <td colspan="7">No projects found.</td>
+          <td colspan="7">
+            <div class="empty-state">
+              <strong> No projects found </strong>
+
+              <span> Try adjusting your search or filters. </span>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>

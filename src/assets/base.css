@@ -1,65 +1,155 @@
 /*
- * Basic global styles.
- *
- * We are intentionally keeping the design
- * simple for now. We'll improve the UI later.
- */
+|--------------------------------------------------------------------------
+| Global styles
+|--------------------------------------------------------------------------
+*/
 
+/*
+ * Make width calculations predictable.
+ */
 * {
   box-sizing: border-box;
 }
 
+/*
+ * Remove default body spacing.
+ */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f5f5f5;
-  color: #222;
+
+  /*
+     * Use a clean system font stack.
+     */
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+
+  /*
+     * Light application background.
+     */
+  background: #f4f6f8;
+
+  /*
+     * Default text color.
+     */
+  color: #1f2937;
 }
 
+/*
+ * Make form controls inherit the application's font.
+ */
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+/*
+ * Make buttons feel clickable.
+ */
 button {
   cursor: pointer;
 }
 
-.container {
-  width: 90%;
-  max-width: 1200px;
-  margin: 40px auto;
+/*
+|--------------------------------------------------------------------------
+| Main application
+|--------------------------------------------------------------------------
+*/
+
+.app-container {
+  width: 92%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 0;
 }
 
-.page-header {
-  margin-bottom: 30px;
+/*
+|--------------------------------------------------------------------------
+| Application header
+|--------------------------------------------------------------------------
+*/
+
+.app-header {
+  display: flex;
+
+  /*
+     * Put title on the left and
+     * create button on the right.
+     */
+  justify-content: space-between;
+
+  /*
+     * Vertically align both elements.
+     */
+  align-items: center;
+
+  margin-bottom: 25px;
 }
 
-.page-header h1 {
-  margin-bottom: 5px;
+.app-header h1 {
+  margin: 0 0 5px;
+  font-size: 30px;
+  font-weight: 700;
 }
 
-.project-table {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
+.app-header p {
+  margin: 0;
+  color: #6b7280;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
+/*
+|--------------------------------------------------------------------------
+| Buttons
+|--------------------------------------------------------------------------
+*/
+
+.primary-button {
+  border: none;
+  border-radius: 6px;
+
+  padding: 10px 16px;
+
+  background: #2563eb;
+  color: white;
+
+  font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease;
 }
 
-th,
-td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
+.primary-button:hover {
+  background: #1d4ed8;
 }
 
-th {
-  background: #f5f5f5;
+.primary-button:active {
+  transform: translateY(1px);
 }
 
+/*
+ * Generic button.
+ */
 button {
-  margin-right: 5px;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+
+  padding: 7px 12px;
+
   background: white;
+}
+
+/*
+ * Disabled buttons.
+ */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

@@ -79,9 +79,9 @@ const handleProjectSaved = () => {
 </script>
 
 <template>
-  <main class="container">
+  <main class="app-container">
     <!-- Page heading -->
-    <header class="page-header">
+    <header class="app-header">
       <div>
         <h1>Project Tracker</h1>
 
@@ -89,18 +89,21 @@ const handleProjectSaved = () => {
       </div>
 
       <!-- Create button -->
-      <button type="button" @click="openCreateForm">+ New Project</button>
+      <button type="button" class="primary-button" @click="openCreateForm">+ New Project</button>
     </header>
-
-    <!-- Project form -->
-    <ProjectForm
-      v-if="showForm"
-      :project="selectedProject"
-      @close="closeForm"
-      @saved="handleProjectSaved"
-    />
 
     <!-- Project table -->
     <ProjectTable ref="projectTable" @edit="openEditForm" />
+
+    <!--  Create/Edit modal. The modal is only rendered when showForm is true -->
+    <div v-if="showForm" class="modal-overlay">
+      <div class="modal">
+        <!-- Close button -->
+        <button type="button" class="modal-close" aria-label="Close" @click="closeForm">×</button>
+
+        <!-- Reusable project form -->
+        <ProjectForm :project="selectedProject" @close="closeForm" @saved="handleProjectSaved" />
+      </div>
+    </div>
   </main>
 </template>
