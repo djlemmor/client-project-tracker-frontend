@@ -20,6 +20,20 @@ const projects = ref<Project[]>([])
 const searchQuery = ref('')
 
 /*
+ * Currently selected status filter.
+ *
+ * Empty string means "all statuses".
+ */
+const statusFilter = ref('')
+
+/*
+ * Currently selected priority filter.
+ *
+ * Empty string means "all priorities".
+ */
+const priorityFilter = ref('')
+
+/*
  * Loading state.
  */
 const loading = ref(false)
@@ -132,32 +146,40 @@ const deleteProject = async (project: Project) => {
  *
  * - Client name
  * - Project name
+ * - Apply search, status, and priority filters.
  */
+
 const filteredProjects = computed(() => {
   /*
-   * Remove unnecessary spaces and make
-   * the search case-insensitive.
+   * Normalize the search text.
    */
   const query = searchQuery.value.trim().toLowerCase()
 
-  /*
-   * If there is no search text,
-   * return every project.
-   */
-  if (!query) {
-    return projects.value
-  }
-
-  /*
-   * Return only projects matching
-   * the client or project name.
-   */
   return projects.value.filter((project) => {
-    const clientName = project.client_name.toLowerCase()
+    /*
+     * Check whether the project matches
+     * the search query.
+     */
+    const matchesSearch =
+      !query ||
+      project.client_name.toLowerCase().includes(query) ||
+      project.project_name.toLowerCase().includes(query)
 
-    const projectName = project.project_name.toLowerCase()
+    /*
+     * Check the selected status.
+     */
+    const matchesStatus = !statusFilter.value || project.status === statusFilter.value
 
-    return clientName.includes(query) || projectName.includes(query)
+    /*
+     * Check the selected priority.
+     */
+    const matchesPriority = !priorityFilter.value || project.priority === priorityFilter.value
+
+    /*
+     * The project must satisfy all
+     * active filters.
+     */
+    return matchesSearch && matchesStatus && matchesPriority
   })
 })
 
@@ -190,6 +212,43 @@ onMounted(() => {
       placeholder="Search by client or project..."
     />
   </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <!-- Status filter -->
+    <div>
+      <label for="status-filter"> Status </label>
+
+      <select id="status-filter" v-model="statusFilter">
+        <option value="">All Statuses</option>
+
+        <option value="Planning">Planning</option>
+
+        <option value="In Progress">In Progress</option>
+
+        <option value="On Hold">On Hold</option>
+
+        <option value="Completed">Completed</option>
+      </select>
+    </div>
+
+    <!-- Priority filter -->
+    <div>
+      <label for="priority-filter"> Priority </label>
+
+      <select id="priority-filter" v-model="priorityFilter">
+        <option value="">All Priorities</option>
+
+        <option value="Low">Low</option>
+
+        <option value="Medium">Medium</option>
+
+        <option value="High">High</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Project Table -->
   <section class="project-table">
     <h2>Projects</h2>
 
