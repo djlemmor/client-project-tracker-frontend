@@ -1,16 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import api from '../services/api'
-
-interface Project {
-  id: number
-  client_name: string
-  project_name: string
-  status: string
-  priority: string
-  start_date: string | null
-  due_date: string | null
-}
+import type { Project } from '../types/project'
 
 /*
  * Stores the list of projects returned
