@@ -65,6 +65,19 @@ const apiErrors = ref<Record<string, string[]>>({})
  */
 const submitting = ref(false)
 
+/**
+ * Reset the form to its default values.
+ */
+const resetForm = () => {
+  form.client_name = ''
+  form.project_name = ''
+  form.description = ''
+  form.status = 'Planning'
+  form.priority = 'Medium'
+  form.start_date = ''
+  form.due_date = ''
+}
+
 /*
  * Watch the project prop.
  *
@@ -115,19 +128,6 @@ watch(
     immediate: true,
   },
 )
-
-/**
- * Reset the form to its default values.
- */
-const resetForm = () => {
-  form.client_name = ''
-  form.project_name = ''
-  form.description = ''
-  form.status = 'Planning'
-  form.priority = 'Medium'
-  form.start_date = ''
-  form.due_date = ''
-}
 
 /**
  * Perform frontend validation.
