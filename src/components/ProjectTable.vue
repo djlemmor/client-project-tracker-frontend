@@ -34,6 +34,21 @@ const statusFilter = ref('')
 const priorityFilter = ref('')
 
 /*
+ * Current column used for sorting.
+ */
+const sortField = ref<keyof Project | null>(null)
+
+/*
+ * Current sorting direction.
+ *
+ * Possible values:
+ *
+ * - asc
+ * - desc
+ */
+const sortDirection = ref<'asc' | 'desc'>('asc')
+
+/*
  * Loading state.
  */
 const loading = ref(false)
@@ -147,41 +162,108 @@ const deleteProject = async (project: Project) => {
  * - Client name
  * - Project name
  * - Apply search, status, and priority filters.
+ * - Filter and sort projects.
  */
 
 const filteredProjects = computed(() => {
-  /*
-   * Normalize the search text.
-   */
   const query = searchQuery.value.trim().toLowerCase()
 
-  return projects.value.filter((project) => {
-    /*
-     * Check whether the project matches
-     * the search query.
-     */
+  /*
+   * First apply filters.
+   */
+  const filtered = projects.value.filter((project) => {
     const matchesSearch =
       !query ||
       project.client_name.toLowerCase().includes(query) ||
       project.project_name.toLowerCase().includes(query)
 
-    /*
-     * Check the selected status.
-     */
     const matchesStatus = !statusFilter.value || project.status === statusFilter.value
 
-    /*
-     * Check the selected priority.
-     */
     const matchesPriority = !priorityFilter.value || project.priority === priorityFilter.value
 
-    /*
-     * The project must satisfy all
-     * active filters.
-     */
     return matchesSearch && matchesStatus && matchesPriority
   })
+
+  /*
+   * If no sorting has been selected,
+   * return the filtered data as-is.
+   */
+  if (!sortField.value) {
+    return filtered
+  }
+
+  const field = sortField.value
+  if (!field) {
+    return filtered
+  }
+
+  /*
+   * Create a copy before sorting.
+   *
+   * This prevents us from modifying
+   * the original projects array.
+   */
+  return [...filtered].sort((a, b) => {
+    let valueA = a[field]
+    let valueB = b[field]
+
+    /*
+     * Convert null/undefined values into
+     * empty strings so comparisons don't fail.
+     */
+    valueA = valueA ?? ''
+    valueB = valueB ?? ''
+
+    /*
+     * Convert strings to lowercase so
+     * sorting isn't case-sensitive.
+     */
+    if (typeof valueA === 'string') {
+      valueA = valueA.toLowerCase()
+    }
+
+    if (typeof valueB === 'string') {
+      valueB = valueB.toLowerCase()
+    }
+
+    /*
+     * Determine the sorting result.
+     */
+    if (valueA < valueB) {
+      return sortDirection.value === 'asc' ? -1 : 1
+    }
+
+    if (valueA > valueB) {
+      return sortDirection.value === 'asc' ? 1 : -1
+    }
+
+    return 0
+  })
 })
+
+/**
+ * Change the active sorting column.
+ *
+ * @param field Database/project field to sort by.
+ */
+const sortBy = (field: keyof Project) => {
+  /*
+   * If the user clicks the same column,
+   * reverse the direction.
+   */
+  if (sortField.value === field) {
+    sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
+
+    return
+  }
+
+  /*
+   * Otherwise select the new column
+   * and start with ascending order.
+   */
+  sortField.value = field
+  sortDirection.value = 'asc'
+}
 
 /*
  * Allow the parent component to refresh
@@ -263,12 +345,24 @@ onMounted(() => {
     <table v-else>
       <thead>
         <tr>
-          <th>Client</th>
-          <th>Project</th>
+          <th>
+            <button type="button" class="sort-button" @click="sortBy('client_name')">Client</button>
+          </th>
+          <th>
+            <button type="button" class="sort-button" @click="sortBy('project_name')">
+              Project
+            </button>
+          </th>
           <th>Status</th>
           <th>Priority</th>
-          <th>Start Date</th>
-          <th>Due Date</th>
+          <th>
+            <button type="button" class="sort-button" @click="sortBy('start_date')">
+              Start Date
+            </button>
+          </th>
+          <th>
+            <button type="button" class="sort-button" @click="sortBy('due_date')">Due Date</button>
+          </th>
           <th>Actions</th>
         </tr>
       </thead>

@@ -170,3 +170,16 @@ button:disabled {
     gap: 15px;
   }
 }
+
+/*
+ * Table sorting buttons should look like
+ * normal table headers.
+ */
+.sort-button {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  font-weight: bold;
+  cursor: pointer;
+}
