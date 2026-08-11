@@ -1,1 +1,84 @@
 @import './base.css';
+
+/*
+ * Project form styles.
+ */
+
+.form-container {
+  background: white;
+  padding: 24px;
+  margin-bottom: 30px;
+  border-radius: 8px;
+}
+
+.form-container h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.error {
+  display: block;
+  margin-top: 5px;
+  color: #dc2626;
+  font-size: 13px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.form-actions button {
+  padding: 9px 16px;
+}
+
+.form-actions button[type='submit'] {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+.form-actions button[type='button'] {
+  background: white;
+}
+
+/*
+ * Header layout.
+ */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-header button {
+  padding: 10px 16px;
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
