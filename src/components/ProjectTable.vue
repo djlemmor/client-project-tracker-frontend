@@ -24,6 +24,14 @@ const loading = ref(false)
  */
 const error = ref('')
 
+/*
+ * Stores the project currently being deleted.
+ *
+ * This is useful because we want to disable
+ * the delete button while the request is running.
+ */
+const deletingProjectId = ref<number | null>(null)
+
 /**
  * Retrieve all projects from the API.
  */
@@ -53,6 +61,62 @@ const fetchProjects = async () => {
     console.error(err)
   } finally {
     loading.value = false
+  }
+}
+
+/**
+ * Delete a project.
+ *
+ * @param project The project the user wants to delete.
+ */
+const deleteProject = async (project: Project) => {
+  /*
+   * Ask the user for confirmation before
+   * permanently deleting the project.
+   */
+  const confirmed = window.confirm(`Are you sure you want to delete "${project.project_name}"?`)
+
+  /*
+   * If the user clicked Cancel,
+   * stop here.
+   */
+  if (!confirmed) {
+    return
+  }
+
+  /*
+   * Remember which project is currently
+   * being deleted.
+   */
+  deletingProjectId.value = project.id
+
+  try {
+    /*
+     * Send:
+     *
+     * DELETE /api/projects/{id}
+     */
+    await api.delete(`/projects/${project.id}`)
+
+    /*
+     * Remove the deleted project from
+     * the local list immediately.
+     *
+     * This avoids another API request.
+     */
+    projects.value = projects.value.filter((item) => item.id !== project.id)
+  } catch (err) {
+    /*
+     * Show an error if deletion fails.
+     */
+    error.value = 'Unable to delete project.'
+
+    console.error(err)
+  } finally {
+    /*
+     * Allow delete buttons to work again.
+     */
+    deletingProjectId.value = null
   }
 }
 
@@ -129,8 +193,15 @@ onMounted(() => {
             <!-- Edit button -->
             <button type="button" @click="emit('edit', project)">Edit</button>
 
-            <!-- Delete will be implemented next -->
-            <button type="button" disabled>Delete</button>
+            <!-- Delete button -->
+            <button
+              type="button"
+              class="delete-button"
+              :disabled="deletingProjectId === project.id"
+              @click="deleteProject(project)"
+            >
+              {{ deletingProjectId === project.id ? 'Deleting...' : 'Delete' }}
+            </button>
           </td>
         </tr>
 
