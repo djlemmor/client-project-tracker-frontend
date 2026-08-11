@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import api from '../services/api'
 import type { Project } from '../types/project'
 
@@ -13,6 +13,11 @@ const emit = defineEmits(['edit'])
  * List of projects retrieved from Laravel.
  */
 const projects = ref<Project[]>([])
+
+/*
+ * Stores the text entered into the search box.
+ */
+const searchQuery = ref('')
 
 /*
  * Loading state.
@@ -121,6 +126,42 @@ const deleteProject = async (project: Project) => {
 }
 
 /*
+ * Filter projects based on the search query.
+ *
+ * We search both:
+ *
+ * - Client name
+ * - Project name
+ */
+const filteredProjects = computed(() => {
+  /*
+   * Remove unnecessary spaces and make
+   * the search case-insensitive.
+   */
+  const query = searchQuery.value.trim().toLowerCase()
+
+  /*
+   * If there is no search text,
+   * return every project.
+   */
+  if (!query) {
+    return projects.value
+  }
+
+  /*
+   * Return only projects matching
+   * the client or project name.
+   */
+  return projects.value.filter((project) => {
+    const clientName = project.client_name.toLowerCase()
+
+    const projectName = project.project_name.toLowerCase()
+
+    return clientName.includes(query) || projectName.includes(query)
+  })
+})
+
+/*
  * Allow the parent component to refresh
  * the table after creating/updating a project.
  */
@@ -138,6 +179,17 @@ onMounted(() => {
 </script>
 
 <template>
+  <!-- Search -->
+  <div class="search-container">
+    <label for="search"> Search Projects </label>
+
+    <input
+      id="search"
+      v-model="searchQuery"
+      type="search"
+      placeholder="Search by client or project..."
+    />
+  </div>
   <section class="project-table">
     <h2>Projects</h2>
 
@@ -164,7 +216,7 @@ onMounted(() => {
 
       <tbody>
         <!-- Project rows -->
-        <tr v-for="project in projects" :key="project.id">
+        <tr v-for="project in filteredProjects" :key="project.id">
           <td>
             {{ project.client_name }}
           </td>
@@ -206,7 +258,7 @@ onMounted(() => {
         </tr>
 
         <!-- Empty state -->
-        <tr v-if="projects.length === 0">
+        <tr v-if="filteredProjects.length === 0">
           <td colspan="7">No projects found.</td>
         </tr>
       </tbody>
