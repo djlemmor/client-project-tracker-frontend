@@ -82,3 +82,22 @@
   color: white;
   border-color: #2563eb;
 }
+
+/*
+ * Delete button.
+ *
+ * The red color visually communicates that
+ * this action is destructive.
+ */
+.delete-button {
+  color: #dc2626;
+  border-color: #dc2626;
+}
+
+/*
+ * Make disabled buttons look inactive.
+ */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
