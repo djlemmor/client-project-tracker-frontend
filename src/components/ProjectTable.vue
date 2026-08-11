@@ -4,53 +4,69 @@ import api from '../services/api'
 import type { Project } from '../types/project'
 
 /*
- * Stores the list of projects returned
- * by the Laravel API.
+ * Tell the parent component when the user
+ * wants to edit a project.
+ */
+const emit = defineEmits(['edit'])
+
+/*
+ * List of projects retrieved from Laravel.
  */
 const projects = ref<Project[]>([])
 
 /*
- * Controls whether the loading message
- * is displayed.
+ * Loading state.
  */
 const loading = ref(false)
 
 /*
- * Stores an error message if the API request fails.
+ * Error message.
  */
 const error = ref('')
 
 /**
- * Fetch all projects from Laravel.
+ * Retrieve all projects from the API.
  */
 const fetchProjects = async () => {
-  // Show loading state before making the request.
   loading.value = true
-
-  // Clear any previous error.
   error.value = ''
 
   try {
-    // Send GET /api/projects.
+    /*
+     * GET /api/projects
+     */
     const response = await api.get('/projects')
 
-    // Store the returned projects.
+    /*
+     * Laravel returns:
+     *
+     * {
+     *     data: [...]
+     * }
+     *
+     * Therefore we access response.data.data.
+     */
     projects.value = response.data.data
   } catch (err) {
-    // Display a friendly error message.
     error.value = 'Unable to load projects.'
 
-    // Log the actual error for debugging.
     console.error(err)
   } finally {
-    // Hide the loading state.
     loading.value = false
   }
 }
 
 /*
+ * Allow the parent component to refresh
+ * the table after creating/updating a project.
+ */
+defineExpose({
+  fetchProjects,
+})
+
+/*
  * Fetch projects when the component
- * is first loaded.
+ * is initially mounted.
  */
 onMounted(() => {
   fetchProjects()
@@ -65,11 +81,10 @@ onMounted(() => {
     <p v-if="loading">Loading projects...</p>
 
     <!-- Error state -->
-    <p v-else-if="error">
+    <p v-else-if="error" class="error">
       {{ error }}
     </p>
 
-    <!-- Project table -->
     <table v-else>
       <thead>
         <tr>
@@ -84,7 +99,7 @@ onMounted(() => {
       </thead>
 
       <tbody>
-        <!-- Display every project -->
+        <!-- Project rows -->
         <tr v-for="project in projects" :key="project.id">
           <td>
             {{ project.client_name }}
@@ -111,9 +126,11 @@ onMounted(() => {
           </td>
 
           <td>
-            <button>Edit</button>
+            <!-- Edit button -->
+            <button type="button" @click="emit('edit', project)">Edit</button>
 
-            <button>Delete</button>
+            <!-- Delete will be implemented next -->
+            <button type="button" disabled>Delete</button>
           </td>
         </tr>
 
