@@ -57,8 +57,13 @@ Before running the application, make sure the following are installed:
 ### 1. Clone the repository
 
 ```bash
+Frontend
 git clone https://github.com/djlemmor/client-project-tracker-frontend.git
 cd client-project-tracker-frontend
+
+Backend
+git clone https://github.com/djlemmor/client-project-tracker-backend.git
+cd client-project-tracker-backend
 ```
 
 ### 2. Install PHP dependencies
