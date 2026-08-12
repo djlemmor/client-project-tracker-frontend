@@ -1,4 +1,4 @@
-# Project Tracker
+# Client Project Tracker
 
 A full-stack project management application for managing client projects, project status, priorities, descriptions, start dates, and due dates.
 
