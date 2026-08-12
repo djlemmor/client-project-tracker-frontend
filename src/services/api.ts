@@ -9,7 +9,7 @@ import axios from 'axios'
  */
 const api = axios.create({
   // Laravel API URL.
-  baseURL: 'http://client-project-tracker-backend.test/api',
+  baseURL: import.meta.env.VITE_API_URL,
 
   // Tell Laravel that we are sending JSON.
   headers: {

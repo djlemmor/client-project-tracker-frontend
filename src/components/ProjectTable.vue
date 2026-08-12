@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import api from '../services/api'
 import type { Project } from '../types/project'
+import { formatDate } from '@/utils/date'
 
 /*
  * Tell the parent component when the user
@@ -421,11 +422,11 @@ onMounted(() => {
           </td>
 
           <td>
-            {{ project.start_date ?? '-' }}
+            {{ formatDate(project.start_date) }}
           </td>
 
           <td>
-            {{ project.due_date ?? '-' }}
+            {{ formatDate(project.due_date) }}
           </td>
 
           <td>
